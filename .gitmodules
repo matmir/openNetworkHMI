@@ -1,8 +1,8 @@
 [submodule "openNetworkHMI_service"]
 	path = openNetworkHMI_service
-	url = git@github.com:matmir/openNetworkHMI_service.git
+	url = https://github.com/matmir/openNetworkHMI_service.git
 	branch = master
 [submodule "openNetworkHMI_web"]
 	path = openNetworkHMI_web
-	url = git@github.com:matmir/openNetworkHMI_web.git
+	url = https://github.com/matmir/openNetworkHMI_web.git
 	branch = master
