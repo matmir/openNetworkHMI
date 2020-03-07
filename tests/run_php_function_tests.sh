@@ -73,8 +73,11 @@ else
 		fi
 
 		echo "Prepare DB..."
+
 		# Prepare DB
-		mysql -u admin -padmin openNetworkHMI_DB_test < ../openNetworkHMI_web/distFiles/testDB/db.sql 
+		DBUSR=$(sed -n '3p' bin/onh/dbConn.conf)
+		DBPASS=$(sed -n '4p' bin/onh/dbConn.conf)
+		mysql -u "$DBUSR" -p"$DBPASS" openNetworkHMI_DB_test < ../openNetworkHMI_web/distFiles/testDB/db.sql 
 
 		# Get server app port number
 		cd ../openNetworkHMI_web
