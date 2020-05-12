@@ -3,8 +3,8 @@ openNetworkHMI
 
 Web based framework for creating HMI interfaces.
 
-INSTALATION
-===========
+INSTALL
+=======
 
 1) git clone --recursive https://github.com/matmir/openNetworkHMI.git
 
