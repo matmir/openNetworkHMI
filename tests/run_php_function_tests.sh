@@ -31,7 +31,7 @@ then
 fi
 
 # Check if server test app is closed
-SERVER_PROC="openNetworkHMI_cpp_test_server"
+SERVER_PROC="openNetworkHMI_cpp_test_server1"
 ONH_PROC="openNetworkHMI"
 if pidof "$SERVER_PROC" >/dev/null
 then
@@ -46,7 +46,7 @@ else
 
 		# Remove old exec
     	rm -f bin/onh/openNetworkHMI
-    	rm -f bin/openNetworkHMI_cpp_test_server
+    	rm -f bin/openNetworkHMI_cpp_test_server1
 
     	# Check if openNetworkHMI is compiled
 		if [ ! -f ../openNetworkHMI_service/build/app/openNetworkHMI ]
@@ -56,14 +56,14 @@ else
 		fi
 
 		# Check if test server is compiled
-		if [ ! -f ../openNetworkHMI_service/test_server/build/app/openNetworkHMI_cpp_test_server ]
+		if [ ! -f ../openNetworkHMI_service/test/test_server1/build/app/openNetworkHMI_cpp_test_server1 ]
 		then
-			echo "openNetworkHMI test server app is not compiled - compile services"
+			echo "openNetworkHMI test server 1 app is not compiled - compile services"
 			return 1
 		fi
 
     	cp ../openNetworkHMI_service/build/app/openNetworkHMI bin/onh/openNetworkHMI
-    	cp ../openNetworkHMI_service/test_server/build/app/openNetworkHMI_cpp_test_server bin/
+    	cp ../openNetworkHMI_service/test/test_server1/build/app/openNetworkHMI_cpp_test_server1 bin/
 
     	# Check if test DB exist
 		if [ ! -f ../openNetworkHMI_web/distFiles/testDB/db.sql ]
@@ -87,7 +87,7 @@ else
 	    cd ../tests/bin
 
 	    # Run test server app in background
-	    ./openNetworkHMI_cpp_test_server > onhServerOutLog 2>&1 &
+	    ./openNetworkHMI_cpp_test_server1 > onhServerOutLog 2>&1 &
 	    SERVER_PID=$!
 
 	    # Wait until SHM region is created and initialized (waiting on shmInited file - server is creating it after startup)

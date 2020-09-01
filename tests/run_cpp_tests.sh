@@ -25,31 +25,31 @@ else
 
     # Remove old exec
     rm -f bin/openNetworkHMI_test
-    rm -f bin/openNetworkHMI_cpp_test_server
+    rm -f bin/openNetworkHMI_cpp_test_server1
 
     # Check if openNetworkHMI test program is compiled
-    if [ ! -f ../openNetworkHMI_service/test/build/app/openNetworkHMI_test ]
+    if [ ! -f ../openNetworkHMI_service/test/tests/build/app/openNetworkHMI_test ]
     then
         echo "openNetworkHMI test app is not compiled - compile services"
         return 1
     fi
 
     # Check if test server is compiled
-    if [ ! -f ../openNetworkHMI_service/test_server/build/app/openNetworkHMI_cpp_test_server ]
+    if [ ! -f ../openNetworkHMI_service/test/test_server1/build/app/openNetworkHMI_cpp_test_server1 ]
     then
-        echo "openNetworkHMI test server app is not compiled - compile services"
+        echo "openNetworkHMI test server 1 app is not compiled - compile services"
         return 1
     fi
 
     # Copy new exec
-    cp ../openNetworkHMI_service/test/build/app/openNetworkHMI_test bin/
-    cp ../openNetworkHMI_service/test_server/build/app/openNetworkHMI_cpp_test_server bin/
+    cp ../openNetworkHMI_service/test/tests/build/app/openNetworkHMI_test bin/
+    cp ../openNetworkHMI_service/test/test_server1/build/app/openNetworkHMI_cpp_test_server1 bin/
     
     # Go to bin directory
     cd bin
 
     # Run test server app in background
-    ./openNetworkHMI_cpp_test_server &
+    ./openNetworkHMI_cpp_test_server1 &
 
     SERVER_PID=$!
 
