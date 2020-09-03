@@ -17,56 +17,87 @@ then
 fi
 
 # Check if server test app is closed
-SERVER_PROC="openNetworkHMI_cpp_test_server"
-if pidof "$SERVER_PROC" >/dev/null
+SERVER1_PROC="onh_test_server1"
+SERVER2_PROC="onh_test_server2"
+if pidof "$SERVER1_PROC" >/dev/null
 then
-    echo "$SERVER_PROC is running!"
+    echo "$SERVER1_PROC is running!"
 else
 
-    # Remove old exec
-    rm -f bin/openNetworkHMI_test
-    rm -f bin/openNetworkHMI_cpp_test_server1
-
-    # Check if openNetworkHMI test program is compiled
-    if [ ! -f ../openNetworkHMI_service/test/tests/build/app/openNetworkHMI_test ]
+    if pidof "$SERVER2_PROC" >/dev/null
     then
-        echo "openNetworkHMI test app is not compiled - compile services"
-        return 1
+        echo "$SERVER2_PROC is running!"
+    else
+
+        # Remove old exec
+        rm -f bin/openNetworkHMI_test
+        rm -f bin/onh_test_server1
+        rm -f bin/onh_test_server2
+
+        # Check if openNetworkHMI test program is compiled
+        if [ ! -f ../openNetworkHMI_service/test/tests/build/app/openNetworkHMI_test ]
+        then
+            echo "openNetworkHMI test app is not compiled - compile services"
+            return 1
+        fi
+
+        # Check if test server 1 is compiled
+        if [ ! -f ../openNetworkHMI_service/test/test_server1/build/app/onh_test_server1 ]
+        then
+            echo "openNetworkHMI test server 1 app is not compiled - compile services"
+            return 1
+        fi
+
+        # Check if test server 2 is compiled
+        if [ ! -f ../openNetworkHMI_service/test/test_server2/build/app/onh_test_server2 ]
+        then
+            echo "openNetworkHMI test server 2 app is not compiled - compile services"
+            return 1
+        fi
+
+        # Copy new exec
+        cp ../openNetworkHMI_service/test/tests/build/app/openNetworkHMI_test bin/
+        cp ../openNetworkHMI_service/test/test_server1/build/app/onh_test_server1 bin/
+        cp ../openNetworkHMI_service/test/test_server2/build/app/onh_test_server2 bin/
+        
+        # Go to bin directory
+        cd bin
+
+        # Run test server 1 app in background
+        ./onh_test_server1 &
+        SERVER1_PID=$!
+
+        # Run test server 2 app in background
+        ./onh_test_server2 &
+        SERVER2_PID=$!
+
+        # Wait until SHM region is created and initialized (waiting on shmInited file - server is creating it after startup)
+        echo "Wait on SHM initialization..."
+        SHM_INITED=0
+        while [ $SHM_INITED -eq 0 ]
+    	do
+    		if [ -f "shmInited" ]; then
+    		    SHM_INITED=1
+    		fi
+    	done
+    	echo "SHM initialized"
+
+        # Wait until SHM region is created and initialized (waiting on shmInited file - server is creating it after startup)
+        echo "Wait on Modbus initialization..."
+        MB_INITED=0
+        while [ $MB_INITED -eq 0 ]
+        do
+            if [ -f "modbusInited" ]; then
+                MB_INITED=1
+            fi
+        done
+        echo "Modbus initialized"
+
+        # Run CPP tests
+        ./openNetworkHMI_test
+
+        # Wait on server app
+        wait $SERVER1_PID
+        wait $SERVER2_PID
     fi
-
-    # Check if test server is compiled
-    if [ ! -f ../openNetworkHMI_service/test/test_server1/build/app/openNetworkHMI_cpp_test_server1 ]
-    then
-        echo "openNetworkHMI test server 1 app is not compiled - compile services"
-        return 1
-    fi
-
-    # Copy new exec
-    cp ../openNetworkHMI_service/test/tests/build/app/openNetworkHMI_test bin/
-    cp ../openNetworkHMI_service/test/test_server1/build/app/openNetworkHMI_cpp_test_server1 bin/
-    
-    # Go to bin directory
-    cd bin
-
-    # Run test server app in background
-    ./openNetworkHMI_cpp_test_server1 &
-
-    SERVER_PID=$!
-
-    # Wait until SHM region is created and initialized (waiting on shmInited file - server is creating it after startup)
-    echo "Wait on SHM initialization..."
-    SHM_INITED=0
-    while [ $SHM_INITED -eq 0 ]
-	do
-		if [ -f "shmInited" ]; then
-		    SHM_INITED=1
-		fi
-	done
-	echo "SHM initialized"
-
-    # Run CPP tests
-    ./openNetworkHMI_test
-
-    # Wait on server app
-    wait $SERVER_PID
 fi
