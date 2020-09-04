@@ -64,11 +64,11 @@ else
         cd bin
 
         # Run test server 1 app in background
-        ./onh_test_server1 &
+        ./onh_test_server1 > onh_test_server1_log 2>&1 &
         SERVER1_PID=$!
 
         # Run test server 2 app in background
-        ./onh_test_server2 &
+        ./onh_test_server2 > onh_test_server2_log 2>&1 &
         SERVER2_PID=$!
 
         # Wait until SHM region is created and initialized (waiting on shmInited file - server is creating it after startup)
@@ -96,8 +96,10 @@ else
         # Run CPP tests
         ./openNetworkHMI_test
 
+        echo "Wait on test servers closed..."
         # Wait on server app
         wait $SERVER1_PID
         wait $SERVER2_PID
+        echo "OK"
     fi
 fi
