@@ -82,7 +82,7 @@ else
     	done
     	echo "SHM initialized"
 
-        # Wait until SHM region is created and initialized (waiting on shmInited file - server is creating it after startup)
+        # Wait until Modbus is initialized (waiting on modbusInited file - server is creating it after startup)
         echo "Wait on Modbus initialization..."
         MB_INITED=0
         while [ $MB_INITED -eq 0 ]
