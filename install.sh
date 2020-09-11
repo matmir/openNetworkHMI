@@ -72,16 +72,23 @@ compile_service() {
 	fi
 
 	# Check if openNetworkHMI test program is compiled
-	if [ ! -f test/build/app/openNetworkHMI_test ]
+	if [ ! -f test/tests/build/app/openNetworkHMI_test ]
 	then
 		echo "openNetworkHMI test app is not compiled - Check compilation logs"
 		return 1
 	fi
 
-	# Check if test server is compiled
-	if [ ! -f test_server/build/app/openNetworkHMI_cpp_test_server ]
+	# Check if test server 1 is compiled
+	if [ ! -f test/test_server1/build/app/onh_test_server1 ]
 	then
-		echo "openNetworkHMI test server app is not compiled - Check compilation logs"
+		echo "openNetworkHMI test server 1 app is not compiled - Check compilation logs"
+		return 1
+	fi
+
+	# Check if test server 2 is compiled
+	if [ ! -f test/test_server2/build/app/onh_test_server2 ]
+	then
+		echo "openNetworkHMI test server 1 app is not compiled - Check compilation logs"
 		return 1
 	fi
 
