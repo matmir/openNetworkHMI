@@ -9,6 +9,16 @@ cd $SCRIPTDIR
 # Base script directory
 BASEDIR=$(pwd)
 
+# Default branch to install
+BRANCH="master"
+
+# Default install ask flag
+ONH_ASK=0
+
+# Input parameters
+PARAM_BRANCH="$1"
+PARAM_ASK="$2"
+
 # Install service from source - compile
 install_from_source() {
 
@@ -283,7 +293,14 @@ onh_web_paths_update() {
 
 	# Update application paths
 	echo "Update web app paths..."
-	php console app:update-paths
+
+	if [ $ONH_ASK -eq 1 ]
+	then
+		php console app:update-paths --ask=yes
+	else
+		php console app:update-paths
+	fi
+
 	if [ "$?" -ne "0" ]
 	then
 		echo "openNetworkHMI update paths failed - see logs"
@@ -378,7 +395,14 @@ onh_create_test_env() {
 
 	# Create sudoers premission file
 	echo "Create test DB sql file..."
-	php console app:generate-test-sql
+
+	if [ $ONH_ASK -eq 1 ]
+	then
+		php console app:generate-test-sql --ask=yes
+	else
+		php console app:generate-test-sql
+	fi
+
 	if [ "$?" -ne "0" ]
 	then
 		echo "openNetworkHMI generate test DB sql file failed - see logs"
@@ -403,7 +427,25 @@ onh_create_test_env() {
 attach_submodules_head() {
 
 	cd openNetworkHMI_service
-	if [ ! -z "$(git status | grep 'HEAD detached at*')" ]; then
+	if [ "$BRANCH" = "develop" ]
+	then
+		echo "Checkout openNetworkHMI_service to develop"
+		git checkout develop
+		if [ "$?" -ne "0" ]
+		then
+			echo "openNetworkHMI service checkout to develop failed - see logs"
+			return 1
+		fi
+
+		cd ../openNetworkHMI_web
+		echo "Checkout openNetworkHMI_web to develop"
+		git checkout develop
+		if [ "$?" -ne "0" ]
+		then
+			echo "openNetworkHMI web app checkout to develop failed - see logs"
+			return 1
+		fi
+	else
 		echo "Checkout openNetworkHMI_service to master"
 		git checkout master
 		if [ "$?" -ne "0" ]
@@ -411,10 +453,8 @@ attach_submodules_head() {
 			echo "openNetworkHMI service checkout to master failed - see logs"
 			return 1
 		fi
-	fi
 
-	cd ../openNetworkHMI_web
-	if [ ! -z "$(git status | grep 'HEAD detached at*')" ]; then
+		cd ../openNetworkHMI_web
 		echo "Checkout openNetworkHMI_web to master"
 		git checkout master
 		if [ "$?" -ne "0" ]
@@ -430,8 +470,50 @@ attach_submodules_head() {
 	return 0
 }
 
+check_params() {
+
+	# Branch select
+	if [ -z "$PARAM_BRANCH" ]
+	then
+    	echo "No branch selected - install master"
+	else
+		if [ "$PARAM_BRANCH" = "develop" ]
+		then
+			echo "Selected branch - develop"
+			BRANCH="develop"
+		else
+			echo "Invalid branch name"
+			return 1
+		fi
+	fi
+
+	# Ask select
+	if [ -z "$PARAM_ASK" ]
+	then
+    	echo "No asking mode"
+	else
+		if [ "$PARAM_ASK" = "ask" ]
+		then
+			echo "Asking mode ON"
+			ONH_ASK=1
+		else
+			echo "Invalid ASK parameter - No asking mode"
+			return 1
+		fi
+	fi
+
+	return 0
+}
+
 # Main installation function
 onh_install() {
+
+	check_params
+	if [ "$?" -ne "0" ]
+	then
+		echo "Check params failed - check logs"
+		return 1
+	fi
 
 	attach_submodules_head
 	if [ "$?" -ne "0" ]
