@@ -499,7 +499,7 @@ check_params() {
 		fi
 	fi
 
-	return 1
+	return 0
 }
 
 # Main installation function
