@@ -196,8 +196,13 @@ onh_db_install() {
 onh_web_install() {
 
 	# Install with composer on this machine?
-	read -p "Do you want to run composer on this machine? [Y]: " runComposer
-	runComposer=${runComposer:-Y}
+	runComposer="Y"
+	if [ $ONH_ASK -eq 1 ]
+	then
+		read -p "Do you want to run composer on this machine? [Y]: " runComposer
+		runComposer=${runComposer:-Y}
+	fi
+
 	if [ "$runComposer" = "Y" ] || [ "$runComposer" = "y" ]
 	then
 
@@ -226,8 +231,13 @@ onh_web_install() {
 	cd $BASEDIR
 
 	# Install virtual host?
-	read -p "Do you want to install default virtual host? [Y]: " defVhost
-	defVhost=${defVhost:-Y}
+	defVhost="Y"
+	if [ $ONH_ASK -eq 1 ]
+	then
+		read -p "Do you want to install default virtual host? [Y]: " defVhost
+		defVhost=${defVhost:-Y}
+	fi
+	
 	if [ "$defVhost" = "Y" ] || [ "$defVhost" = "y" ]
 	then
 
