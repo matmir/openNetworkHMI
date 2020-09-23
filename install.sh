@@ -9,14 +9,17 @@ cd $SCRIPTDIR
 # Base script directory
 BASEDIR=$(pwd)
 
-# Default branch to install
-BRANCH="master"
+# Default branch
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Default submodules checkout
+BRANCH_CHECKOUT=1
 
 # Default install ask flag
 ONH_ASK=0
 
 # Input parameters
-PARAM_BRANCH="$1"
+PARAM_CHECKOUT="$1"
 PARAM_ASK="$2"
 
 # Install service from source - compile
@@ -426,63 +429,53 @@ onh_create_test_env() {
 
 attach_submodules_head() {
 
-	cd openNetworkHMI_service
-	if [ "$BRANCH" = "develop" ]
+	# Attach head?
+	if [ $BRANCH_CHECKOUT -eq 1 ]
 	then
-		echo "Checkout openNetworkHMI_service to develop"
-		git checkout develop
+		
+		cd openNetworkHMI_service
+		echo "Checkout openNetworkHMI_service to $BRANCH"
+		git checkout $BRANCH
 		if [ "$?" -ne "0" ]
 		then
-			echo "openNetworkHMI service checkout to develop failed - see logs"
+			echo "openNetworkHMI service checkout to $BRANCH failed - see logs"
 			return 1
 		fi
 
 		cd ../openNetworkHMI_web
-		echo "Checkout openNetworkHMI_web to develop"
-		git checkout develop
+		echo "Checkout openNetworkHMI_web to $BRANCH"
+		git checkout $BRANCH
 		if [ "$?" -ne "0" ]
 		then
-			echo "openNetworkHMI web app checkout to develop failed - see logs"
-			return 1
-		fi
-	else
-		echo "Checkout openNetworkHMI_service to master"
-		git checkout master
-		if [ "$?" -ne "0" ]
-		then
-			echo "openNetworkHMI service checkout to master failed - see logs"
+			echo "openNetworkHMI web app checkout to $BRANCH failed - see logs"
 			return 1
 		fi
 
-		cd ../openNetworkHMI_web
-		echo "Checkout openNetworkHMI_web to master"
-		git checkout master
-		if [ "$?" -ne "0" ]
-		then
-			echo "openNetworkHMI web app checkout to master failed - see logs"
-			return 1
-		fi
+		# Back to the main directory
+		cd $BASEDIR
+
 	fi
-	
-	# Back to the main directory
-	cd $BASEDIR
 
 	return 0
 }
 
 check_params() {
 
-	# Branch select
-	if [ -z "$PARAM_BRANCH" ]
+	# Checkout select
+	if [ -z "$PARAM_CHECKOUT" ]
 	then
-    	echo "No branch selected - install master"
+		echo "Submodules checkout ON"
 	else
-		if [ "$PARAM_BRANCH" = "develop" ]
+		if [ "$PARAM_CHECKOUT" = "checkoutOFF" ]
 		then
-			echo "Selected branch - develop"
-			BRANCH="develop"
+			echo "Submodules checkout OFF"
+			BRANCH_CHECKOUT=0
+		elif [ "$PARAM_CHECKOUT" = "checkoutON" ]
+		then
+			echo "Submodules checkout ON"
+			BRANCH_CHECKOUT=1
 		else
-			echo "Invalid branch name"
+			echo "Invalid Checkout config parameter"
 			return 1
 		fi
 	fi
@@ -496,13 +489,17 @@ check_params() {
 		then
 			echo "Asking mode ON"
 			ONH_ASK=1
+		elif [ "$PARAM_ASK" = "askOFF" ]
+		then
+			echo "Asking mode OFF"
+			ONH_ASK=0
 		else
-			echo "Invalid ASK parameter - No asking mode"
+			echo "Invalid ASK parameter"
 			return 1
 		fi
 	fi
 
-	return 0
+	return 1
 }
 
 # Main installation function
