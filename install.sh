@@ -18,35 +18,18 @@ BRANCH_CHECKOUT=1
 # Default install ask flag
 ONH_ASK=0
 
+# Default install with tests
+ONH_TEST=0
+
 # Input parameters
 PARAM_CHECKOUT="$1"
 PARAM_ASK="$2"
+PARAM_TEST="$3"
 
 # Install service from source - compile
 install_from_source() {
 
 	echo "Install service from source"
-
-	# Check MariaDB lib
-	if [ ! -d /usr/include/mariadb ]
-	then
-	    echo "Missing libmariadb-dev"
-	    return 1
-	fi
-
-	# Check modbus lib
-	if [ ! -d /usr/local/include/modbus ]
-	then
-	    echo "Missing libmodbus"
-	    return 1
-	fi
-
-	# Check gtest lib
-	if [ ! -d /usr/local/include/gtest ]
-	then
-	    echo "Missing googletest"
-	    return 1
-	fi
 
 	# Install SHM driver libs
 	install_shm_libs
@@ -73,36 +56,56 @@ compile_service() {
 
 	echo "Service compilation"
 
-	# Compile services
+	# Create build directory
 	cd openNetworkHMI_service/
-	make release
+	if [ ! -d build/ ]
+	then
+	    mkdir build
+	fi
+	cd build
+
+	# Generate makefile
+	if [ $ONH_TEST -eq 1 ]
+	then
+		cmake -DWithTest ..
+	else
+		cmake ..
+	fi
+	
+	# Compile
+	make
+
+	cd ../
 
 	# Check if openNetworkHMI is compiled
-	if [ ! -f build/app/openNetworkHMI ]
+	if [ ! -f build/openNetworkHMI ]
 	then
 		echo "openNetworkHMI service is not compiled - Check compilation logs"
 		return 1
 	fi
 
-	# Check if openNetworkHMI test program is compiled
-	if [ ! -f test/tests/build/app/openNetworkHMI_test ]
+	if [ $ONH_TEST -eq 1 ]
 	then
-		echo "openNetworkHMI test app is not compiled - Check compilation logs"
-		return 1
-	fi
+		# Check if openNetworkHMI test program is compiled
+		if [ ! -f build/test/tests/openNetworkHMI_test ]
+		then
+			echo "openNetworkHMI test app is not compiled - Check compilation logs"
+			return 1
+		fi
 
-	# Check if test server 1 is compiled
-	if [ ! -f test/test_server1/build/app/onh_test_server1 ]
-	then
-		echo "openNetworkHMI test server 1 app is not compiled - Check compilation logs"
-		return 1
-	fi
+		# Check if test server 1 is compiled
+		if [ ! -f build/test/test_server1/onh_test_server1 ]
+		then
+			echo "openNetworkHMI test server 1 app is not compiled - Check compilation logs"
+			return 1
+		fi
 
-	# Check if test server 2 is compiled
-	if [ ! -f test/test_server2/build/app/onh_test_server2 ]
-	then
-		echo "openNetworkHMI test server 1 app is not compiled - Check compilation logs"
-		return 1
+		# Check if test server 2 is compiled
+		if [ ! -f build/test/test_server2/onh_test_server2 ]
+		then
+			echo "openNetworkHMI test server 2 app is not compiled - Check compilation logs"
+			return 1
+		fi
 	fi
 
 	# Back to the main directory
@@ -113,14 +116,31 @@ compile_service() {
 
 install_shm_libs() {
 
-	echo "Libs compilation"
+	echo "Libraries compilation"
 
 	# Compile SHM driver c libs
 	cd openNetworkHMI_service/library/libonhSHMc
-	make release
+	if [ ! -d build/ ]
+	then
+	    mkdir build
+	fi
+	cd build
+
+	# Generate makefile
+	if [ $ONH_TEST -eq 1 ]
+	then
+		cmake -DWithTest ..
+	else
+		cmake ..
+	fi
+	
+	# Compile
+	make
+
+	cd ../
 
 	# Check if library is compiled
-	if [ ! -f build/lib/libonhSHMc.a ]
+	if [ ! -f build/libonhSHMc.a ]
 	then
 		echo "Library libonhSHMc is not compiled - Check compilation logs"
 		return 1
@@ -138,10 +158,27 @@ install_shm_libs() {
 
 	# Compile SHM driver c++ libs
 	cd ../libonhSHMcpp
-	make release
+	if [ ! -d build/ ]
+	then
+	    mkdir build
+	fi
+	cd build
+
+	# Generate makefile
+	if [ $ONH_TEST -eq 1 ]
+	then
+		cmake -DWithTest ..
+	else
+		cmake ..
+	fi
+	
+	# Compile
+	make
+
+	cd ../
 
 	# Check if library is compiled
-	if [ ! -f build/lib/libonhSHMcpp.a ]
+	if [ ! -f build/libonhSHMcpp.a ]
 	then
 		echo "Library libonhSHMcpp is not compiled - Check compilation logs"
 		return 1
@@ -505,6 +542,25 @@ check_params() {
 			ONH_ASK=0
 		else
 			echo "Invalid ASK parameter"
+			return 1
+		fi
+	fi
+
+	# Tests select
+	if [ -z "$PARAM_TEST" ]
+	then
+    	echo "No test build"
+	else
+		if [ "$PARAM_TEST" = "test" ]
+		then
+			echo "Test build ON"
+			ONH_TEST=1
+		elif [ "$PARAM_TEST" = "testOFF" ]
+		then
+			echo "Test build OFF"
+			ONH_TEST=0
+		else
+			echo "Invalid TEST parameter"
 			return 1
 		fi
 	fi

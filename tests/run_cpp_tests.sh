@@ -35,30 +35,30 @@ else
         rm -f bin/onh_test_server2
 
         # Check if openNetworkHMI test program is compiled
-        if [ ! -f ../openNetworkHMI_service/test/tests/build/app/openNetworkHMI_test ]
+        if [ ! -f ../openNetworkHMI_service/build/test/tests/openNetworkHMI_test ]
         then
             echo "openNetworkHMI test app is not compiled - compile services"
             return 1
         fi
 
         # Check if test server 1 is compiled
-        if [ ! -f ../openNetworkHMI_service/test/test_server1/build/app/onh_test_server1 ]
+        if [ ! -f ../openNetworkHMI_service/build/test/test_server1/onh_test_server1 ]
         then
             echo "openNetworkHMI test server 1 app is not compiled - compile services"
             return 1
         fi
 
         # Check if test server 2 is compiled
-        if [ ! -f ../openNetworkHMI_service/test/test_server2/build/app/onh_test_server2 ]
+        if [ ! -f ../openNetworkHMI_service/build/test/test_server2/onh_test_server2 ]
         then
             echo "openNetworkHMI test server 2 app is not compiled - compile services"
             return 1
         fi
 
         # Copy new exec
-        cp ../openNetworkHMI_service/test/tests/build/app/openNetworkHMI_test bin/
-        cp ../openNetworkHMI_service/test/test_server1/build/app/onh_test_server1 bin/
-        cp ../openNetworkHMI_service/test/test_server2/build/app/onh_test_server2 bin/
+        cp ../openNetworkHMI_service/build/test/tests/openNetworkHMI_test bin/
+        cp ../openNetworkHMI_service/build/test/test_server1/onh_test_server1 bin/
+        cp ../openNetworkHMI_service/build/test/test_server2/onh_test_server2 bin/
         
         # Go to bin directory
         cd bin
