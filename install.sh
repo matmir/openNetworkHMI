@@ -221,7 +221,7 @@ onh_db_install() {
 
 	# Prepare service config file
 	echo "Prepare openNetworkHMI service db configuration file"
-	echo "openNetworkHMI_DB\nlocalhost\n$dbUser\n$dbPass" > openNetworkHMI_service/build/app/dbConn.conf
+	echo "openNetworkHMI_DB\nlocalhost\n$dbUser\n$dbPass" > openNetworkHMI_service/build/dbConn.conf
 
 	# Prepare web app config file
 	echo "Prepare openNetworkHMI web app configuration file"
