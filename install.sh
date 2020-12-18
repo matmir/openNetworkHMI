@@ -67,7 +67,7 @@ compile_service() {
 	# Generate makefile
 	if [ $ONH_TEST -eq 1 ]
 	then
-		cmake -DWithTest ..
+		cmake -DWithTest=true ..
 	else
 		cmake ..
 	fi
@@ -129,7 +129,7 @@ install_shm_libs() {
 	# Generate makefile
 	if [ $ONH_TEST -eq 1 ]
 	then
-		cmake -DWithTest ..
+		cmake -DWithTest=true ..
 	else
 		cmake ..
 	fi
@@ -167,7 +167,7 @@ install_shm_libs() {
 	# Generate makefile
 	if [ $ONH_TEST -eq 1 ]
 	then
-		cmake -DWithTest ..
+		cmake -DWithTest=true ..
 	else
 		cmake ..
 	fi
