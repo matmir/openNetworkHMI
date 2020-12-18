@@ -137,10 +137,8 @@ install_shm_libs() {
 	# Compile
 	make
 
-	cd ../
-
 	# Check if library is compiled
-	if [ ! -f build/libonhSHMc.a ]
+	if [ ! -f libonhSHMc.a ]
 	then
 		echo "Library libonhSHMc is not compiled - Check compilation logs"
 		return 1
@@ -148,6 +146,8 @@ install_shm_libs() {
 
 	# Install library
 	sudo make install
+
+	cd ../
 
 	# Check installation
 	if [ ! -d /usr/local/include/onhSHMc ]
@@ -175,10 +175,8 @@ install_shm_libs() {
 	# Compile
 	make
 
-	cd ../
-
 	# Check if library is compiled
-	if [ ! -f build/libonhSHMcpp.a ]
+	if [ ! -f libonhSHMcpp.a ]
 	then
 		echo "Library libonhSHMcpp is not compiled - Check compilation logs"
 		return 1
@@ -186,6 +184,8 @@ install_shm_libs() {
 
 	# Install library
 	sudo make install
+
+	cd ../
 
 	# Check installation
 	if [ ! -d /usr/local/include/onhSHMcpp ]
