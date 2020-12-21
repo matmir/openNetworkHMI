@@ -118,8 +118,8 @@ install_shm_libs() {
 
 	echo "Libraries compilation"
 
-	# Compile SHM driver c libs
-	cd openNetworkHMI_service/library/libonhSHMc
+	# Compile SHM driver libraries
+	cd openNetworkHMI_service/library/
 	if [ ! -d build/ ]
 	then
 	    mkdir build
@@ -138,9 +138,16 @@ install_shm_libs() {
 	make
 
 	# Check if library is compiled
-	if [ ! -f libonhSHMc.a ]
+	if [ ! -f libonhSHMc/libonhSHMc.a ]
 	then
 		echo "Library libonhSHMc is not compiled - Check compilation logs"
+		return 1
+	fi
+
+	# Check if library is compiled
+	if [ ! -f libonhSHMcpp/libonhSHMcpp.a ]
+	then
+		echo "Library libonhSHMcpp is not compiled - Check compilation logs"
 		return 1
 	fi
 
@@ -155,37 +162,6 @@ install_shm_libs() {
 	    echo "libonhSHMc not installed - check installation logs"
 	    return 1
 	fi
-
-	# Compile SHM driver c++ libs
-	cd ../libonhSHMcpp
-	if [ ! -d build/ ]
-	then
-	    mkdir build
-	fi
-	cd build
-
-	# Generate makefile
-	if [ $ONH_TEST -eq 1 ]
-	then
-		cmake -DWithTest=true ..
-	else
-		cmake ..
-	fi
-	
-	# Compile
-	make
-
-	# Check if library is compiled
-	if [ ! -f libonhSHMcpp.a ]
-	then
-		echo "Library libonhSHMcpp is not compiled - Check compilation logs"
-		return 1
-	fi
-
-	# Install library
-	sudo make install
-
-	cd ../
 
 	# Check installation
 	if [ ! -d /usr/local/include/onhSHMcpp ]
