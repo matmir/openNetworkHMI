@@ -8,4 +8,4 @@ cd $SCRIPTDIR
 
 cd ../openNetworkHMI_web
 
-./bin/phpunit --testsuite unit --coverage-html ../tests/reports/
+XDEBUG_MODE=coverage ./bin/phpunit --testsuite unit --coverage-html ../tests/reports/
