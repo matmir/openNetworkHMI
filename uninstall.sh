@@ -73,17 +73,17 @@ clean_shm_libs() {
 
 	# Uninstall library
 	sudo rm -r /usr/local/include/onhSHMc /usr/local/include/onhSHMcpp
-	sudo rm /usr/local/lib/onhSHMc.a /usr/local/lib/onhSHMcpp.a
+	sudo rm /usr/local/lib/libonhSHMc.a /usr/local/lib/libonhSHMcpp.a
 
 	# Check uninstallation
-	if [ -d /usr/local/include/onhSHMc ] || [ -f /usr/local/lib/onhSHMc.a ]
+	if [ -d /usr/local/include/onhSHMc ] || [ -f /usr/local/lib/libonhSHMc.a ]
 	then
 	    echo "libonhSHMc not uninstalled - check logs"
 	    return 1
 	fi
 
 	# Check uninstallation
-	if [ -d /usr/local/include/onhSHMcpp ] || [ -f /usr/local/lib/onhSHMcpp.a ]
+	if [ -d /usr/local/include/onhSHMcpp ] || [ -f /usr/local/lib/libonhSHMcpp.a ]
 	then
 	    echo "libonhSHMcpp not uninstalled - check logs"
 	    return 1
