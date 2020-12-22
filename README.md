@@ -6,9 +6,27 @@ Web based framework for creating HMI interfaces.
 INSTALL
 =======
 
-1) git clone --recursive https://github.com/matmir/openNetworkHMI.git
+	git clone --recursive https://github.com/matmir/openNetworkHMI.git
+	cd openNetworkHMI/
+	./install.sh
 
-2) Go to openNetworkHMI directory and run ./install.sh
+Additional install parameters:
+
+	./install.sh [BRANCH_CHECKOUT] [ONH_ASK] [ONH_TEST]
+	
+	BRANCH_CHECKOUT - checkout submodules to the main repo branch.
+	                  Values: "checkoutON" or "checkoutOFF" - default "checkoutON".
+	ONH_ASK         - install with additional user questions.
+	                  Values: "ask" or "askOFF" - default "askOFF".
+	ONH_TEST        - compile tests.
+	                  Values: "test" or "testOFF" - default "testOFF".
+
+Install develop version with additional install questions and tests:
+
+	git clone --recursive https://github.com/matmir/openNetworkHMI.git
+	cd openNetworkHMI/
+	git checkout develop
+	./install.sh checkoutON ask test
 
 Project site: https://opennetworkhmi.net
 
