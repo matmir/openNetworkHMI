@@ -58,22 +58,22 @@ clean_service() {
 
 clean_shm_libs() {
 
-	echo "Libs clean"
+	echo "Libraries clean"
 
 	# Clean SHM driver c libs
-	cd openNetworkHMI_service/library/libonhSHMc
+	cd openNetworkHMI_service/library/
 	sudo rm -r build/
 
 	# Check if library is cleaned
 	if [ -d build ]
 	then
-		echo "Library libonhSHMc is not cleaned - Check logs"
+		echo "Library is not cleaned - Check logs"
 		return 1
 	fi
 
 	# Uninstall library
-	sudo rm -r /usr/local/include/onhSHMc
-	sudo rm /usr/local/lib/onhSHMc.a
+	sudo rm -r /usr/local/include/onhSHMc /usr/local/include/onhSHMcpp
+	sudo rm /usr/local/lib/onhSHMc.a /usr/local/lib/onhSHMcpp.a
 
 	# Check uninstallation
 	if [ -d /usr/local/include/onhSHMc ] || [ -f /usr/local/lib/onhSHMc.a ]
@@ -81,21 +81,6 @@ clean_shm_libs() {
 	    echo "libonhSHMc not uninstalled - check logs"
 	    return 1
 	fi
-
-	# Clean SHM driver c++ libs
-	cd ../libonhSHMcpp
-	sudo rm -r build/
-
-	# Check if library is cleaned
-	if [ -d build ]
-	then
-		echo "Library libonhSHMcpp is not cleaned - Check logs"
-		return 1
-	fi
-
-	# Uninstall library
-	sudo rm -r /usr/local/include/onhSHMcpp
-	sudo rm /usr/local/lib/onhSHMcpp.a
 
 	# Check uninstallation
 	if [ -d /usr/local/include/onhSHMcpp ] || [ -f /usr/local/lib/onhSHMcpp.a ]
