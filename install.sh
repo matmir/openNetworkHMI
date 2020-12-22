@@ -208,36 +208,20 @@ onh_db_install() {
 
 onh_web_install() {
 
-	# Install with composer on this machine?
-	runComposer="Y"
-	if [ $ONH_ASK -eq 1 ]
+	# Check if composer is installed
+	if [ ! -f /usr/local/bin/composer ]
 	then
-		read -p "Do you want to run composer on this machine? [Y]: " runComposer
-		runComposer=${runComposer:-Y}
+		echo "Composer is not installed - Check installation"
+		return 1
 	fi
 
-	if [ "$runComposer" = "Y" ] || [ "$runComposer" = "y" ]
+	echo "Composer install"
+	cd openNetworkHMI_web
+	composer install
+	if [ "$?" -ne "0" ]
 	then
-
-		# Check if composer is installed
-		if [ ! -f /usr/local/bin/composer ]
-		then
-			echo "Composer is not installed - Check installation"
-			return 1
-		fi
-
-		echo "Composer install"
-		cd openNetworkHMI_web
-		composer install
-		if [ "$?" -ne "0" ]
-		then
-			echo "Composer installation error - see logs"
-			return 1
-		fi
-
-	else
-		echo "Run composer install on other machine and copy vendor catalog into openNetworkHMI_web directory"
-		read -p "Press Enter when finished..." entWait
+		echo "Composer installation error - see logs"
+		return 1
 	fi
 
 	# Back to the main directory
