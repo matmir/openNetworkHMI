@@ -21,7 +21,7 @@ Additional install parameters:
 	ONH_TEST        - compile tests.
 	                  Values: "test" or "testOFF" - default "testOFF".
 
-Install develop version with additional install questions and tests:
+Install develop version with ask mode and tests:
 
 	git clone --recursive https://github.com/matmir/openNetworkHMI.git
 	cd openNetworkHMI/
