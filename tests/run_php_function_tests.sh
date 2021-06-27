@@ -164,7 +164,7 @@ else
 		    # Run tests
 		    cd ../../../openNetworkHMI_web
 
-			./bin/phpunit --testsuite function
+			php ./vendor/bin/phpunit --testsuite function
 
 			# close onh service
 			echo "Close ONH service: "
