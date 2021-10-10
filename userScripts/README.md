@@ -1,1 +1,1 @@
-Put user *.sh files in this directory
+Put user script files in this directory
