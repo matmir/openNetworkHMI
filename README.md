@@ -28,7 +28,7 @@ Install develop version with ask mode and tests:
 	git checkout develop
 	./install.sh checkoutON ask test
 
-Project site: https://opennetworkhmi.net
+Project site: http://opennetworkhmi.net
 
 License
 =======
