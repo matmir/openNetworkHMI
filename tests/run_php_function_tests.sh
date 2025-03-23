@@ -90,9 +90,10 @@ else
 			echo "Prepare DB..."
 
 			# Prepare DB
+			DBHOST=$(sed -n '2p' bin/onh/dbConn.conf)
 			DBUSR=$(sed -n '3p' bin/onh/dbConn.conf)
 			DBPASS=$(sed -n '4p' bin/onh/dbConn.conf)
-			mysql -u "$DBUSR" -p"$DBPASS" openNetworkHMI_DB_test < ../openNetworkHMI_web/distFiles/testDB/db.sql 
+			mariadb -h "$DBHOST" -u "$DBUSR" -p"$DBPASS" < ../openNetworkHMI_web/distFiles/testDB/db.sql 
 
 			# Get server app port number
 			cd ../openNetworkHMI_web
