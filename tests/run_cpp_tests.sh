@@ -71,28 +71,6 @@ else
         ./onh_test_server2 > onh_test_server2_log 2>&1 &
         SERVER2_PID=$!
 
-        # Wait until SHM region is created and initialized (waiting on shmInited file - server is creating it after startup)
-        echo "Wait on SHM initialization..."
-        SHM_INITED=0
-        while [ $SHM_INITED -eq 0 ]
-    	do
-    		if [ -f "shmInited" ]; then
-    		    SHM_INITED=1
-    		fi
-    	done
-    	echo "SHM initialized"
-
-        # Wait until Modbus is initialized (waiting on modbusInited file - server is creating it after startup)
-        echo "Wait on Modbus initialization..."
-        MB_INITED=0
-        while [ $MB_INITED -eq 0 ]
-        do
-            if [ -f "modbusInited" ]; then
-                MB_INITED=1
-            fi
-        done
-        echo "Modbus initialized"
-
         # Run CPP tests
         ./openNetworkHMI_test
 
