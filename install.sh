@@ -323,29 +323,6 @@ onh_web_paths_update() {
 	return 0
 }
 
-onh_create_sudoers() {
-
-	cd openNetworkHMI_web/bin
-
-	# Create sudoers premission file
-	echo "Create sudoers premissions file..."
-	php console app:generate-sudoers
-	if [ "$?" -ne "0" ]
-	then
-		echo "openNetworkHMI generate sudoers failed - see logs"
-		return 1
-	fi
-
-	# Back to the main directory
-	cd $BASEDIR
-
-	# Copy generated file to /etc/sudoers.d/
-	echo "Copy sudoers premissions file to /etc/sudoers.d/"
-	sudo cp openNetworkHMI_web/distFiles/sudoers/openNetworkHMI_premissions /etc/sudoers.d/
-
-	return 0
-}
-
 onh_create_systemd() {
 
 	cd openNetworkHMI_web/bin
@@ -573,14 +550,6 @@ onh_install() {
 	if [ "$?" -ne "0" ]
 	then
 		echo "Web app path update failed - check logs"
-		return 1
-	fi
-
-	# Create sudoers premissions for web app
-	onh_create_sudoers
-	if [ "$?" -ne "0" ]
-	then
-		echo "Create sudoers premissions failed - check logs"
 		return 1
 	fi
 
